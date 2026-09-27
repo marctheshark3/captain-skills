@@ -62,6 +62,12 @@ def main() -> int:
     guide = (ROOT / "docs" / "guide.md").read_text()
     if guide.count("```mermaid") < 4:
         raise SystemExit("docs/guide.md needs the four voyage diagrams")
+    for name in ("architecture", "which-voyage", "same-ship", "when-wrong"):
+        img = ROOT / "docs" / "img" / f"{name}.png"
+        if not img.is_file() or img.stat().st_size < 1000:
+            raise SystemExit(f"missing diagram {img}")
+        if f"img/{name}.png" not in guide:
+            raise SystemExit(f"guide does not show {name}")
     blob = blob + "\n" + readme + "\n" + guide.lower()
     for word in BANNED:
         if word in blob:

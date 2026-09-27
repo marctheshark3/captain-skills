@@ -6,42 +6,31 @@ Each skill is one voyage. A voyage is a new process, with only the charge attach
 
 The order lives in a file or a ticket. If it only exists in the chat, it does not exist.
 
+The pictures are the maps. The mermaid under each one is the same map in text. GitHub draws that text in a separate frame, and that frame drops diagrams that contain punctuation, subgraphs, or a dotted label. If you still see a code block, read the picture.
+
 ## Architecture
 
 You hold two things the agent is not allowed to hold: the order, and acceptance.
 
+![Architecture. You hold the order and acceptance. A session may not accept the result.](img/architecture.png)
+
 ```mermaid
 flowchart TB
-  you["Captain"]
-  order["ORDERS.md or the ticket"]
-  nav["navigator"]
-  you --> order
-  you --> nav
-
-  subgraph ship ["One process. One skill. No other chat attached."]
-    direction LR
-    co["captain-order"]
-    mg["make-grade"]
-    mc["miss-check"]
-    mp["make-pass"]
-    cb["cut-bloat"]
-    mh["miss-hunt"]
-  end
-
-  nav -->|"names one voyage, then stops"| ship
-  order -.->|"attach the file. Do not paste the old chat."| mg
-  order -.-> mc
-  order -.-> mh
-
-  repo["The repo you are changing"]
-  mg --> repo
+  you[Captain] --> order[Order file]
+  you --> nav[navigator]
+  order --> mg[make-grade]
+  nav --> co[captain-order]
+  nav --> mg
+  nav --> mc[miss-check]
+  nav --> mp[make-pass]
+  nav --> cb[cut-bloat]
+  nav --> mh[miss-hunt]
+  mg --> repo[Product repo]
   mc --> repo
   mp --> repo
   cb --> repo
   mh --> repo
-
-  grade["You run the grade"]
-  repo --> grade
+  repo --> grade[You run the grade]
   grade --> you
 ```
 
@@ -59,36 +48,39 @@ Start a new session after install. A session that was already running will not s
 
 Load navigator first. It does not write code. If two of these are true, the earlier one wins. It will hand you a paste. Open a new process and paste that. Do not keep talking in the session that classified the work.
 
+![Which voyage. Earlier match wins. Then open a new process.](img/which-voyage.png)
+
 ```mermaid
 flowchart TD
-  start["Load navigator. Do not write code."] --> q1{"Is the order gradeable?"}
-  q1 -->|no| co["captain-order"]
-  q1 -->|yes| q2{"Is a behavior wrong, with no failing check yet?"}
-  q2 -->|yes| mc["miss-check"]
-  q2 -->|no| q3{"Does a failing check already exist?"}
-  q3 -->|yes| mp["make-pass in a new process"]
-  q3 -->|no| q4{"Is the diff over budget, or did you say bloat?"}
-  q4 -->|yes| cb["cut-bloat"]
-  q4 -->|no| q5{"Did a review still miss cases?"}
-  q5 -->|yes| mh["miss-hunt, and do not attach the review"]
-  q5 -->|no| q6{"Has the build started?"}
-  q6 -->|no| mg["make-grade"]
-  q6 -->|yes| acc["You run V1, V2, V3"]
+  start[Load navigator] --> q1{Order gradeable}
+  q1 -->|no| co[captain-order]
+  q1 -->|yes| q2{Behavior wrong}
+  q2 -->|yes| mc[miss-check]
+  q2 -->|no| q3{Check already fails}
+  q3 -->|yes| mp[make-pass]
+  q3 -->|no| q4{Diff over budget}
+  q4 -->|yes| cb[cut-bloat]
+  q4 -->|no| q5{Review still missed}
+  q5 -->|yes| mh[miss-hunt]
+  q5 -->|no| q6{Build started}
+  q6 -->|no| mg[make-grade]
+  q6 -->|yes| acc[You run the grade]
 ```
 
 ## Same ship
 
 This is the failure that feels like progress. The build session spawns a reviewer. The reviewer shares the parent's frame. It finds the cases the parent already imagined. The miss you care about was never in that frame, so another subagent will not find it either.
 
+![Same ship. A subagent inherited this chat. It is not a fresh session.](img/same-ship.png)
+
 ```mermaid
 flowchart LR
-  subgraph same ["Session A. One ship."]
-    parent["make-grade"]
-    child["subagent review"]
-    parent --> child
+  subgraph A [Session A]
+    parent[make-grade] --> child[subagent review]
   end
-  fresh["Session B. New process. miss-hunt."]
-  same -.->|"the chat does not come along"| fresh
+  subgraph B [Session B]
+    hunt[miss-hunt]
+  end
 ```
 
 A subagent may do a narrow task already ordered inside the current voyage. It may not be the grader, the hunt, or the cut. Those need a process that never saw this chat.
@@ -97,21 +89,21 @@ A subagent may do a narrow task already ordered inside the current voyage. It ma
 
 Do not steer the build session. Steering teaches it to patch the sentence you just typed. Stop. Write one line, in your words: when I do X, I expected Y, I got Z. That line is the only charge the next process gets.
 
+![When the result is wrong. Do not steer the build session.](img/when-wrong.png)
+
 ```mermaid
 sequenceDiagram
-  actor You
-  participant A as Session A
-  participant B as Session B
-  participant C as Session C
-  You->>A: Order attached. Make the grade. Do not review.
-  A-->>You: Diff and command output. Not "done".
-  You->>You: Run V1 V2 V3
-  Note over A: Stop. Do not review here.
-  You->>B: When I do X, I expected Y, I got Z. Write one failing check. Do not fix.
-  B-->>You: A check that fails for Z
-  You->>C: This check fails. Make it pass. Touch nothing else.
-  C-->>You: Stat, and the check output
-  You->>You: Run the check. You accept, or you do not.
+  participant You
+  participant A as SessionA
+  participant B as SessionB
+  participant C as SessionC
+  You->>A: Make the grade
+  A-->>You: Diff not done
+  You->>B: Write one failing check
+  B-->>You: Check fails
+  You->>C: Make it pass
+  C-->>You: Stat and output
+  You->>You: You accept
 ```
 
 One miss per voyage. Three misses are three checks, and the first of those sessions does not write product code until the check exists and fails for the reason you named.

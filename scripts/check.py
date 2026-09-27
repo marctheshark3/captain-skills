@@ -59,7 +59,10 @@ def main() -> int:
             raise SystemExit(f"{name}: missing a refusal")
     blob = "\n".join(blob_parts).lower()
     readme = (ROOT / "README.md").read_text().lower()
-    blob = blob + "\n" + readme
+    guide = (ROOT / "docs" / "guide.md").read_text()
+    if guide.count("```mermaid") < 4:
+        raise SystemExit("docs/guide.md needs the four voyage diagrams")
+    blob = blob + "\n" + readme + "\n" + guide.lower()
     for word in BANNED:
         if word in blob:
             raise SystemExit(f"banned string present: {word}")

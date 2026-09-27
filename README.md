@@ -50,6 +50,8 @@ Load navigator. Do not write code.
 
 It will name one voyage and give you a paste for the next session. Do not `--continue` into that next session.
 
+The map, the miss sequence, and a full loop are in [docs/guide.md](docs/guide.md).
+
 ## Order
 
 `templates/ORDERS.md` is the shape. It lives in the ticket, or in a file you attach with `-f`. If it only exists in the chat, it does not exist.

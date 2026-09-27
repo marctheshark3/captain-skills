@@ -34,7 +34,7 @@ A review that returns only style notes is `REVIEW_FAILED`.
 
 - `PASS` only when 3 failing behavior tests exist. Otherwise `REVIEW_FAILED`.
 - For each test: the input, the wrong result, the path.
-- One line: the human keeps the real misses and drops the ones that are thoroughness theater. Each kept miss is a later `miss-check` session. This session does not fix.
+- One line: the human keeps the real misses and drops the ones that are thoroughness theater. Each kept miss is a later `make-pass` session. This session does not fix.
 
 ## Verification
 

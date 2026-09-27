@@ -34,7 +34,7 @@ flowchart TB
   grade --> you
 ```
 
-The dashed lines are the trust boundary. The agent may read the order. It may not decide that the order changed. It may run a command to see a failure. It may not accept the result. You do that, by running the grade where you can see the output.
+The return line is the trust boundary. The agent may read the order. It may not decide that the order changed. It may run a command to see a failure. It may not accept the result. You do that, by running the grade where you can see the output.
 
 Install once, outside the repo the agent is changing. See the [README](../README.md). Then add one line to your own harness config, not to the project:
 

@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS = ROOT / "skills"
-REQUIRED = ("navigator", "captain-order", "miss-check", "cut-bloat", "miss-hunt")
+REQUIRED = ("navigator", "captain-order", "make-grade", "make-pass", "miss-check", "cut-bloat", "miss-hunt")
 BANNED = (
     "northrop",
     "spark-adb4",

@@ -2,12 +2,14 @@
 
 OpenCode skills for captaining a coding agent. The agent is the crew. You are the captain. The crew does not get to report that it arrived.
 
-Five skills. No bundle. A bundle hides the gate.
+Seven skills. No bundle. A bundle hides the gate.
 
 | Skill | Voyage |
 | --- | --- |
 | `navigator` | Trusted advisor. Load this first. It does not write the product. |
 | `captain-order` | Four lines, outside the chat, before any code. |
+| `make-grade` | New session. Order attached. Make the grade pass. Do not review yourself. |
+| `make-pass` | New session. One failing check. Make it pass. Touch nothing else. |
 | `miss-check` | One wrong behavior becomes one failing check. No fix in that session. |
 | `cut-bloat` | `git diff --stat` first. Over budget goes back unread. Delete only. |
 | `miss-hunt` | Fresh session. Three failing tests. A review plan from the build is not an input. |

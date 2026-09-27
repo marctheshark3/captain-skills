@@ -1,6 +1,6 @@
 ---
 name: navigator
-description: This skill should be used when the user says "navigator", "captain", "keep going", "same session", "continue", "it's not working", "bloat", "review missed it", or is about to implement, fix, and review in one conversation. Trusted advisor. Does not write the product.
+description: This skill should be used when the user says "navigator", "captain", "keep going", "same session", "continue", "it's not working", "bloat", "review missed it", "build this", "make this pass", or is about to implement, fix, and review in one conversation. Trusted advisor. Does not write the product.
 version: 0.1.0
 license: MIT
 compatibility: opencode
@@ -36,10 +36,12 @@ Restate these before the voyage. Six lines. Do not add a seventh.
 Pick one. If two apply, the earlier one wins.
 
 1. No gradeable order yet. Voyage is `captain-order`. Do not write code.
-2. A specific behavior is wrong. Voyage is `miss-check`. One sentence only: when I do X, I expected Y, I got Z.
-3. The diff is fat, or the human said bloat. Voyage is `cut-bloat`. Do not read the code first.
-4. A review felt thorough and still missed. Voyage is `miss-hunt`. Do not hand the next session the review plan, the implementation chat, or a summary of what was fixed.
-5. The human is ready to accept. Voyage is the two-minute grade below. You do not claim the checks passed.
+2. A specific behavior is wrong and no failing check exists yet. Voyage is `miss-check`. One sentence only: when I do X, I expected Y, I got Z.
+3. A failing check exists. Voyage is `make-pass`. New session. Attach the check and the sentence. Do not fix here.
+4. The diff is fat, or the human said bloat. Voyage is `cut-bloat`. Do not read the code first.
+5. A review felt thorough and still missed. Voyage is `miss-hunt`. Do not hand the next session the review plan, the implementation chat, or a summary of what was fixed.
+6. The order exists and the build has not started. Voyage is `make-grade`. New session. Attach the order only.
+7. The human is ready to accept. Voyage is the two-minute grade below. You do not claim the checks passed.
 
 ## Same session
 
@@ -59,6 +61,8 @@ Load <skill>. Do not mix voyages.
 Charges:
 
 - captain-order: `Fill the four lines. Ask one question at a time. Do not write code.`
+- make-grade: `The order is attached. Make the grade commands pass. Do not review. Stop at budget.`
+- make-pass: `This check fails: <path>. When I do X, I expected Y, I got Z. Make it pass. Touch nothing else.`
 - miss-check: `When I do X, I expected Y, I got Z. Write one failing check. Do not fix.`
 - cut-bloat: `Delete whatever the named checks do not need. Do not add code. Show diff --stat before and after.`
 - miss-hunt: `Done means: <sentence>. Find 3 inputs where the result is wrong. Add a failing test for each. Do not fix.`
